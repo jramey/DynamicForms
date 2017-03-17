@@ -1,0 +1,5 @@
+<h1> {{ vm.model.title }} </h1>
+<p ng-if="!vm.validInput">Decimals Only Please!</p>
+<input type="text" ng-readonly="vm.model.readOnly" ng-keydown="vm.validate" ng-model="vm.model.value" />
+<span style="color: red" ng-if="vm.model.required"> * Required</span>
+<p>Directive Value: {{ vm.model }}</p>
