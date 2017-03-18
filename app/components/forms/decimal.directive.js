@@ -15,7 +15,8 @@
             bindToController: true,
             restrict: 'E',
             scope: {
-                model: '=bind'
+                model: '=bind',
+                callback: '&'
             }
         };
 
@@ -31,17 +32,25 @@
         vm.validInput = true;
 
         $scope.$watch("vm.model.value", function(newValue, oldValue) {
-            if (vm.model.value.length > 0) {
-                validate();
-            }
+            if (oldValue == newValue)
+                return;
+
+            validate();
+            onChange(vm.model);
         });
 
         function validate() {
-            if (vm.model.readOnly)
+            if (vm.model.readOnly || !vm.model.value || vm.model.value.length === 0) {
+                vm.validInput = true;
                 return;
+            }
 
-            var num = parseFloat(vm.model.valid);
+            var num = parseFloat(vm.model.value);
             vm.validInput = !Number.isNaN(num) && num.toFixed(2).toString() === vm.model.value;
+        }
+
+        function onChange(model) {
+            vm.callback({ field: model });
         }
     }
 })();

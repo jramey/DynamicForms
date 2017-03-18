@@ -1,8 +1,7 @@
 <div class="container" ng-controller="homeController as vm">
     <p> {{ vm.feedback }} </p>
     <div ng-repeat="model in vm.mockedFields track by $index">
-        <p>Controller Value: {{ vm.mockedFields }}</p>
-        <example-decimal ng-if="model.type == 'DECIMAL'" bind="model"></example-decimal>
+        <example-decimal ng-if="model.type == 'DECIMAL' && vm.setFieldVisibility(model)" bind="model" callback="vm.onChange(field)"></example-decimal>
     </div>
 
     <button type="button" ng-click="vm.submit()">Sumbit</button>

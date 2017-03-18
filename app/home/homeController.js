@@ -13,6 +13,8 @@
         vm.feedback = '';
         vm.open = open;
         vm.submit = submit;
+        vm.onChange = onChange;
+        vm.setFieldVisibility = setFieldVisibility;
         vm.formats = ['dd-MMMM-yyyy', 'yyyy/MM/dd', 'dd.MM.yyyy', 'shortDate'];
         vm.format = vm.formats[0];
         vm.altInputFormats = ['M!/d!/yyyy'];
@@ -32,16 +34,23 @@
                 required: true,
                 value: '',
                 required: true,
-                readOnly: false
+                readOnly: false,
+                maxLength: 5,
+                visibleMetaData: {},
             },
             {
-                id: 1,
+                id: 2,
                 title: 'Field 2',
                 type: 'DECIMAL',
                 required: false,
                 value: 'Disabled',
                 required: false,
-                readOnly: true
+                readOnly: true,
+                maxLength: 5,
+                visibleMetaData: {
+                    fieldId: 1,
+                    value: 2.50
+                }
             }
         ];
 
@@ -51,7 +60,7 @@
 
         function submit() {
             var missingRequiredFiles = vm.mockedFields.filter(function(field) {
-                return field.required && field.value == '';
+                return field.required && (field.display || field.alwaysDisplay) && field.value == '';
             })
 
             if (missingRequiredFiles.length > 0) {
@@ -60,6 +69,27 @@
             }
 
             console.log(vm.mockedFields);
+        }
+
+        function setFieldVisibility(model) {
+            if (model.alwaysDisplay)
+                return true;
+
+            var fieldsToEvaluate = vm.mockedFields.filter(function(field) {
+                return field.id == model.visibleMetaData.fieldId;
+            });
+
+            if (fieldsToEvaluate.length === 0) {
+                model.alwaysDisplay = true;
+                return true;
+            }
+
+            model.display = fieldsToEvaluate[0].value == model.visibleMetaData.value;
+            return model.display;
+        }
+
+        function onChange(field) {
+            console.log("change dropdown values if applicable")
         }
     }
 })();
